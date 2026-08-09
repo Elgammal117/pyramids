@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pyramids/Core/Features/Attendance/Presentation/View/LocationPermission.dart';
 import 'package:pyramids/Core/Features/Home/Data/Models/WorkplaceItem.dart';
-import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
-import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
+import 'package:pyramids/Core/Features/Home/Presentation/Cubit/HomeCubit.dart';
+import 'package:pyramids/Core/Features/Home/Presentation/Cubit/HomeState.dart';
 import 'package:pyramids/Core/helper/my_navigator.dart';
 import 'package:pyramids/Core/helper/show_snack_bar.dart';
 

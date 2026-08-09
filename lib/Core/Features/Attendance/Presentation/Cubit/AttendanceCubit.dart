@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pyramids/Core/Features/Home/Data/Models/WorkplaceItem.dart';
-import 'package:pyramids/Core/Features/Home/Presentation/Cubit/HomeState.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit({
