@@ -4,11 +4,13 @@ abstract class AuthState {}
 
 class LoginInitial extends AuthState {}
 
-class LoginLoading extends AuthState {}
+class Loading extends AuthState {}
 
 class LoginSuccess extends AuthState {
-  final LoginModel loginModel;
-  LoginSuccess({required this.loginModel});
+  final String accessToken;
+  final String userName;
+
+  LoginSuccess({required this.accessToken, required this.userName});
 }
 
 class LoginFailure extends AuthState {
@@ -17,8 +19,6 @@ class LoginFailure extends AuthState {
 }
 
 class SignupInitial extends AuthState {}
-
-class SignupLoading extends AuthState {}
 
 class SignupSuccess extends AuthState {
   final SignUpModel signUpModel;
@@ -31,8 +31,6 @@ class SignupError extends AuthState {
 }
 
 class GetUserInitial extends AuthState {}
-
-class GetUserLoading extends AuthState {}
 
 class GetUserSuccess extends AuthState {
   final UserModel userModel;

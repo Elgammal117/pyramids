@@ -25,7 +25,7 @@ class Authrepo {
   }) async {
     try {
       var response = await dio.post(
-        'auth/signup',
+        'auth/register',
         data: {'name': name, 'email': email, 'password': password},
       );
       return right(SignUpModel.fromJson(response.data));
