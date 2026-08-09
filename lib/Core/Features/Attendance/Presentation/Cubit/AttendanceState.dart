@@ -1,45 +1,45 @@
-import 'package:pyramids/Core/Features/Home/Data/Models/WorkplaceItem.dart';
+import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart';
 
-abstract class HomeState {
+abstract class AttendanceState {
   final WorkplaceItem? selectedWorkplace;
   final bool isCheckedIn;
   final int maxDistanceMeters;
 
-  const HomeState({
+  const AttendanceState({
     required this.selectedWorkplace,
     required this.isCheckedIn,
     required this.maxDistanceMeters,
   });
 }
 
-class HomeInitial extends HomeState {
-  const HomeInitial({
+class AttendanceInitial extends AttendanceState {
+  const AttendanceInitial({
     required super.selectedWorkplace,
     required super.isCheckedIn,
     required super.maxDistanceMeters,
   });
 }
 
-class HomeLoading extends HomeState {
-  const HomeLoading({
+class AttendanceLoading extends AttendanceState {
+  const AttendanceLoading({
     required super.selectedWorkplace,
     required super.isCheckedIn,
     required super.maxDistanceMeters,
   });
 }
 
-class HomeSuccess extends HomeState {
-  const HomeSuccess({
+class AttendanceSuccess extends AttendanceState {
+  const AttendanceSuccess({
     required super.selectedWorkplace,
     required super.isCheckedIn,
     required super.maxDistanceMeters,
   });
 }
 
-class HomeFailure extends HomeState {
+class AttendanceFailure extends AttendanceState {
   final String error;
 
-  const HomeFailure({
+  const AttendanceFailure({
     required super.selectedWorkplace,
     required super.isCheckedIn,
     required super.maxDistanceMeters,

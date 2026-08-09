@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 
 import 'package:pyramids/Core/Features/Attendance/Presentation/View/LocationPermission.dart';
-import 'package:pyramids/Core/Features/Home/Data/Models/WorkplaceItem.dart';
-import 'package:pyramids/Core/Features/Home/Presentation/Cubit/HomeCubit.dart';
-import 'package:pyramids/Core/Features/Home/Presentation/Cubit/HomeState.dart';
+import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart';
 import 'package:pyramids/Core/helper/my_navigator.dart';
 import 'package:pyramids/Core/helper/show_snack_bar.dart';
 
@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
     this.currentBottomNavIndex = 0,
   });
 
-  void _showWorkplaceBottomSheet(BuildContext context, HomeCubit cubit) {
+  void _showWorkplaceBottomSheet(BuildContext context, AttendanceCubit cubit) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -91,14 +91,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit(
+      create: (context) => AttendanceCubit(
         initialSelectedWorkplace: initialSelectedWorkplace,
         maxDistanceMeters: maxDistanceMeters,
         initialIsCheckedIn: initialIsCheckedIn,
       ),
-      child: BlocConsumer<HomeCubit, HomeState>(
+      child: BlocConsumer<AttendanceCubit, AttendanceState>(
         listener: (context, state) {
-          if (state is HomeFailure) {
+          if (state is AttendanceFailure) {
             showCustomSnackBar(
               context,
               text: state.error,
@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
         },
 
         builder: (context, state) {
-          final cubit = HomeCubit.get(context);
+          final cubit = AttendanceCubit.get(context);
 
           final selectedWorkplace = state.selectedWorkplace;
 
@@ -428,7 +428,7 @@ class HomeScreen extends StatelessWidget {
                                 ? () {
                                     cubit.onCheckInPressed();
 
-                                    if (cubit.state is! HomeFailure) {
+                                    if (cubit.state is! AttendanceFailure) {
                                       onCheckInTap?.call();
                                       goTo(
                                         context,

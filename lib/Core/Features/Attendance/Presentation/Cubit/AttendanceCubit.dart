@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pyramids/Core/Features/Home/Data/Models/WorkplaceItem.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
+import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart';
 
-class HomeCubit extends Cubit<HomeState> {
-  HomeCubit({
+class AttendanceCubit extends Cubit<AttendanceState> {
+  AttendanceCubit({
     WorkplaceItem? initialSelectedWorkplace,
     int maxDistanceMeters = 900,
     bool initialIsCheckedIn = false,
   }) : super(
-         HomeInitial(
+         AttendanceInitial(
            selectedWorkplace: initialSelectedWorkplace,
            isCheckedIn: initialIsCheckedIn,
            maxDistanceMeters: maxDistanceMeters,
          ),
        );
 
-  static HomeCubit get(BuildContext context) => BlocProvider.of(context);
+  static AttendanceCubit get(BuildContext context) => BlocProvider.of(context);
 
   void selectWorkplace(WorkplaceItem workplace) {
     emit(
-      HomeSuccess(
+      AttendanceSuccess(
         selectedWorkplace: workplace,
         isCheckedIn: state.isCheckedIn,
         maxDistanceMeters: state.maxDistanceMeters,
@@ -30,7 +30,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   void toggleCheckInStatus() {
     emit(
-      HomeLoading(
+      AttendanceLoading(
         selectedWorkplace: state.selectedWorkplace,
         isCheckedIn: state.isCheckedIn,
         maxDistanceMeters: state.maxDistanceMeters,
@@ -39,7 +39,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     Future.delayed(const Duration(milliseconds: 300), () {
       emit(
-        HomeSuccess(
+        AttendanceSuccess(
           selectedWorkplace: state.selectedWorkplace,
           isCheckedIn: !state.isCheckedIn,
           maxDistanceMeters: state.maxDistanceMeters,
@@ -51,7 +51,7 @@ class HomeCubit extends Cubit<HomeState> {
   void onCheckInPressed() {
     if (state.selectedWorkplace == null) {
       emit(
-        HomeFailure(
+        AttendanceFailure(
           selectedWorkplace: state.selectedWorkplace,
           isCheckedIn: state.isCheckedIn,
           maxDistanceMeters: state.maxDistanceMeters,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/Home.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthCubit.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthState.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/View/SignUp.dart';
-import 'package:pyramids/Core/Features/Home/Presentation/View/Home.dart';
 import 'package:pyramids/Core/helper/my_navigator.dart';
 import 'package:pyramids/Core/helper/show_snack_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
