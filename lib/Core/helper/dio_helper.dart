@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 Dio dio = Dio(
   BaseOptions(
-    baseUrl: 'http://localhost:3000/api/v1/',
+    baseUrl: 'https://attendance-production-7a3f.up.railway.app/api/v1/',
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     sendTimeout: const Duration(seconds: 30),
