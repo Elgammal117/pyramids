@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/CheckOut.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/View/Home.dart';
 import 'package:pyramids/Core/Features/Reports/Presentation/View/MonthlyReports.dart';
 
 class MainNavigation extends StatefulWidget {
   final String tokken;
   final String userName;
+  final int? page;
 
-  MainNavigation({super.key, required this.tokken, required this.userName});
+  MainNavigation({
+    this.page,
+    super.key,
+    required this.tokken,
+    required this.userName,
+  });
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
@@ -16,29 +26,51 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.page != null) {
+      _currentIndex = widget.page!;
+    }
+  }
+
   void _onNavTap(int index) {
     setState(() => _currentIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          HomeScreen(
-            tokken: widget.tokken,
-            userName: widget.userName,
-            currentBottomNavIndex: _currentIndex,
-            onBottomNavTap: _onNavTap,
-          ),
-          MonthlyReportsScreen(
-            tokken: widget.tokken,
-            userName: widget.userName,
-          ),
-        ],
+    return BlocProvider(
+      create: (context) => AttendanceCubit(),
+      child: BlocBuilder<AttendanceCubit, AttendanceState>(
+        builder: (context, state) {
+          final isCheckedIn = state.isCheckedIn == true;
+
+          return Scaffold(
+            body: IndexedStack(
+              index: _currentIndex,
+              children: [
+                isCheckedIn
+                    ? CheckOutScreen(
+                        tokken: widget.tokken,
+                        userName: widget.userName,
+                      )
+                    : HomeScreen(
+                        tokken: widget.tokken,
+                        userName: widget.userName,
+                        currentBottomNavIndex: _currentIndex,
+                        onBottomNavTap: _onNavTap,
+                      ),
+                MonthlyReportsScreen(
+                  tokken: widget.tokken,
+                  userName: widget.userName,
+                ),
+              ],
+            ),
+            bottomNavigationBar: _buildBottomNav(),
+          );
+        },
       ),
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 

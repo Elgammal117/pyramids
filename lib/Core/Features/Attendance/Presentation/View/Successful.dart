@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pyramids/Core/Features/Reports/Presentation/View/DailyReports.dart';
+import 'package:pyramids/Core/Features/Reports/Presentation/View/MonthlyReports.dart';
+import 'package:pyramids/Core/Navigation/MainNavigation.dart';
+import 'package:pyramids/Core/Util/app_colors.dart';
+import 'package:pyramids/Core/helper/my_navigator.dart';
 
 class SuccessfulScreen extends StatelessWidget {
-  const SuccessfulScreen({super.key});
+  final String? tokken;
+  final String? userName;
+  final String? totalDuration;
+  final String? checkOutTime;
+  final String? workplaceName;
+
+  const SuccessfulScreen({
+    super.key,
+    this.tokken,
+    this.userName,
+    this.totalDuration,
+    this.checkOutTime,
+    this.workplaceName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8C0FD).withValues(alpha: 0.08),
+      backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
         top: false,
         child: Column(
@@ -30,15 +48,6 @@ class SuccessfulScreen extends StatelessWidget {
               child: Row(
                 children: [
                   // Menu Button
-                  Container(
-                    width: 44.r,
-                    height: 44.r,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.menu, color: Colors.white, size: 22.sp),
-                  ),
                   SizedBox(width: 14.w),
                   // Welcome Text
                   Expanded(
@@ -57,7 +66,7 @@ class SuccessfulScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          'Alexander Wright',
+                          userName ?? 'Alexander Wright',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.sp,
@@ -67,20 +76,8 @@ class SuccessfulScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   // Profile Icon
-                  Container(
-                    width: 44.r,
-                    height: 44.r,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.person_outline,
-                      color: Colors.white,
-                      size: 22.sp,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -161,7 +158,7 @@ class SuccessfulScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: Text(
-                          'You have successfully checked out from New Cairo Headquarters.',
+                          'You have successfully checked out from ${workplaceName ?? 'New Cairo Headquarters'}.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: const Color(0xFF667085),
@@ -207,7 +204,7 @@ class SuccessfulScreen extends StatelessWidget {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  '07h 51m',
+                                  totalDuration ?? '00h 00m',
                                   style: TextStyle(
                                     color: const Color(0xFF1B1B4B),
                                     fontSize: 18.sp,
@@ -248,7 +245,7 @@ class SuccessfulScreen extends StatelessWidget {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  '04:35 PM',
+                                  checkOutTime ?? '00:00 AM',
                                   style: TextStyle(
                                     color: const Color(0xFF1B1B4B),
                                     fontSize: 18.sp,
@@ -268,7 +265,16 @@ class SuccessfulScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 54.h,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            goTo(
+                              context,
+                              page: MainNavigation(
+                                page: 1,
+                                tokken: '',
+                                userName: '',
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4F46E5),
                             elevation: 4,
@@ -283,7 +289,7 @@ class SuccessfulScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'View Daily Report',
+                                'View Monthly Report',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.sp,
@@ -308,7 +314,16 @@ class SuccessfulScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 52.h,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            goTo(
+                              context,
+                              page: MainNavigation(
+                                page: 0,
+                                tokken: '',
+                                userName: '',
+                              ),
+                            );
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0xFFF8F9FE),
                             shape: RoundedRectangleBorder(
@@ -328,64 +343,6 @@ class SuccessfulScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            ),
-
-            // Bottom Navigation Bar
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: const Color(0xFFEAECF0), width: 1.w),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // Home Tab
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.grid_view_rounded,
-                        color: const Color(0xFF4F46E5),
-                        size: 24.sp,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'HOME',
-                        style: TextStyle(
-                          color: const Color(0xFF4F46E5),
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // History Tab
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.history_rounded,
-                        color: const Color(0xFF667085),
-                        size: 24.sp,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'HISTORY',
-                        style: TextStyle(
-                          color: const Color(0xFF667085),
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
           ],

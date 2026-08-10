@@ -19,7 +19,7 @@ class Pyramids extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: HomeScreen(tokken: '', userName: ''),
+          home: LoginScreen(),
         );
       },
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pyramids/Core/Features/Reports/Presentation/View/DailyReports.dart';
+import 'package:pyramids/Core/Util/app_colors.dart';
 
 class MonthlyReportsScreen extends StatelessWidget {
   final String tokken;
@@ -15,7 +16,7 @@ class MonthlyReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFA8C0FD).withValues(alpha: 0.08),
+      backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
         top: false,
         child: Column(

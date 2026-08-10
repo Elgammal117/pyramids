@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/CheckOut.dart';
 
 import 'package:pyramids/Core/Features/Attendance/Presentation/View/LocationPermission.dart';
 import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart';
@@ -15,13 +16,10 @@ class HomeScreen extends StatelessWidget {
   final String userName;
 
   final WorkplaceItem? initialSelectedWorkplace;
-  final int maxDistanceMeters;
   final bool initialIsCheckedIn;
 
   final List<WorkplaceItem> workplaces;
 
-  final VoidCallback? onMenuTap;
-  final VoidCallback? onProfileTap;
   final ValueChanged<WorkplaceItem>? onSelectWorkplace;
 
   final VoidCallback? onCheckInTap;
@@ -34,24 +32,22 @@ class HomeScreen extends StatelessWidget {
     required this.tokken,
     required this.userName,
     this.initialSelectedWorkplace,
-    this.maxDistanceMeters = 900,
     this.initialIsCheckedIn = false,
     this.workplaces = const [
       WorkplaceItem(
-        id: '1',
-        title: 'New Cairo Headquarters',
+        id: '6a7883981c1828d405f07720',
+        title: 'التجمع',
         subtitle: 'Main Administrative Hub',
         icon: Icons.apartment_rounded,
       ),
       WorkplaceItem(
-        id: '2',
-        title: 'Administrative Capital',
+        id: '6a7883971c1828d405f0771f',
+        title: 'العاصمه',
         subtitle: 'Satellite Business District',
         icon: Icons.location_city_rounded,
       ),
     ],
-    this.onMenuTap,
-    this.onProfileTap,
+
     this.onSelectWorkplace,
     this.onCheckInTap,
     this.onCheckOutTap,
@@ -90,331 +86,338 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AttendanceCubit(
-        initialSelectedWorkplace: initialSelectedWorkplace,
-        maxDistanceMeters: maxDistanceMeters,
-        initialIsCheckedIn: initialIsCheckedIn,
-      ),
-      child: BlocConsumer<AttendanceCubit, AttendanceState>(
-        listener: (context, state) {
-          if (state is AttendanceFailure) {
-            showCustomSnackBar(
-              context,
-              text: state.error,
-              status: SnackBarStatus.fail,
-            );
-          }
-        },
+    return BlocConsumer<AttendanceCubit, AttendanceState>(
+      listener: (context, state) {
+        if (state is AttendanceFailure) {
+          showCustomSnackBar(
+            context,
+            text: state.error,
+            status: SnackBarStatus.fail,
+          );
+        } else if (state is AttendanceSuccess) {
+          showCustomSnackBar(
+            context,
+            text: 'Check in successful',
+            status: SnackBarStatus.success,
+          );
+        }
+      },
 
-        builder: (context, state) {
-          final cubit = AttendanceCubit.get(context);
+      builder: (context, state) {
+        final cubit = AttendanceCubit.get(context);
 
-          final selectedWorkplace = state.selectedWorkplace;
+        final selectedWorkplace = state.selectedWorkplace;
+        final isLoading = state is AttendanceLoading;
 
-          // Button should ONLY depend on whether
-          // a workplace has been selected.
-          final isCheckInEnabled = selectedWorkplace != null;
+        // Button should ONLY depend on whether
+        // a workplace has been selected.
+        final isCheckInEnabled = selectedWorkplace != null;
 
-          const headerBgColor = Color(0xFF1B1B4B);
-          const primaryBlue = Color(0xFF4B42DB);
-          const bodyBgColor = Color(0xFFF6F8FF);
-          const lightCardBg = Color(0xFFE8EEFF);
-          const infoBoxBg = Color(0xFFE5E7FF);
-          const disabledButtonBg = Color(0xFFC7CDED);
+        const headerBgColor = Color(0xFF1B1B4B);
+        const primaryBlue = Color(0xFF4B42DB);
+        const bodyBgColor = Color(0xFFF6F8FF);
+        const lightCardBg = Color(0xFFE8EEFF);
+        const infoBoxBg = Color(0xFFE5E7FF);
+        const disabledButtonBg = Color(0xFFC7CDED);
 
-          return Scaffold(
-            backgroundColor: bodyBgColor,
+        return Scaffold(
+          backgroundColor: bodyBgColor,
 
-            body: Column(
-              children: [
-                // =========================================================
-                // HEADER
-                // =========================================================
-                Container(
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 16.h,
-                    bottom: 24.h,
-                    left: 20.w,
-                    right: 20.w,
+          body: Column(
+            children: [
+              // =========================================================
+              // HEADER
+              // =========================================================
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 16.h,
+                  bottom: 24.h,
+                  left: 20.w,
+                  right: 20.w,
+                ),
+
+                decoration: BoxDecoration(
+                  color: headerBgColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(28.r),
+                    bottomRight: Radius.circular(28.r),
                   ),
+                ),
 
-                  decoration: BoxDecoration(
-                    color: headerBgColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(28.r),
-                      bottomRight: Radius.circular(28.r),
+                child: Row(
+                  children: [
+                    // Menu
+                    SizedBox(width: 14.w),
+
+                    // User information
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                        mainAxisSize: MainAxisSize.min,
+
+                        children: [
+                          Text(
+                            'WELCOME BACK',
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withValues(alpha: 0.6),
+                            ),
+                          ),
+
+                          SizedBox(height: 2.h),
+
+                          Text(
+                            userName,
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+
+                    // Profile
+                  ],
+                ),
+              ),
+
+              // =========================================================
+              // BODY
+              // =========================================================
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 20.h,
                   ),
 
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
-                      // Menu
-                      SizedBox(width: 14.w),
+                      // =================================================
+                      // STATUS CARD
+                      // =================================================
+                      Container(
+                        width: double.infinity,
 
-                      // User information
-                      Expanded(
+                        padding: EdgeInsets.all(24.w),
+
+                        decoration: BoxDecoration(
+                          color: lightCardBg,
+                          borderRadius: BorderRadius.circular(24.r),
+                        ),
+
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-
-                          mainAxisSize: MainAxisSize.min,
-
                           children: [
-                            Text(
-                              'WELCOME BACK',
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                letterSpacing: 1.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white.withValues(alpha: 0.6),
+                            Container(
+                              width: 56.w,
+                              height: 56.h,
+
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                shape: BoxShape.circle,
+                              ),
+
+                              child: Icon(
+                                Icons.person_off_outlined,
+
+                                color: (Colors.black54),
+
+                                size: 28,
                               ),
                             ),
 
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 16.h),
 
                             Text(
-                              userName,
+                              'Not Checked In',
+
                               style: TextStyle(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: const Color(0xFF1B1B4B),
+                              ),
+                            ),
+
+                            SizedBox(height: 8.h),
+
+                            Text(
+                              'Please select a workplace to start your session.',
+
+                              textAlign: TextAlign.center,
+
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.black54,
+                                height: 1.3,
                               ),
                             ),
                           ],
                         ),
                       ),
 
-                      // Profile
-                    ],
-                  ),
-                ),
+                      SizedBox(height: 24.h),
 
-                // =========================================================
-                // BODY
-                // =========================================================
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 20.h,
-                    ),
+                      // =================================================
+                      // START SESSION
+                      // =================================================
+                      Text(
+                        'Start Session',
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF1B1B4B),
+                        ),
+                      ),
 
-                      children: [
-                        // =================================================
-                        // STATUS CARD
-                        // =================================================
-                        Container(
-                          width: double.infinity,
+                      SizedBox(height: 14.h),
 
-                          padding: EdgeInsets.all(24.w),
+                      // =================================================
+                      // SELECT WORKPLACE
+                      // =================================================
+                      InkWell(
+                        onTap: () {
+                          _showWorkplaceBottomSheet(context, cubit);
+                        },
+
+                        borderRadius: BorderRadius.circular(16.r),
+
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
 
                           decoration: BoxDecoration(
                             color: lightCardBg,
-                            borderRadius: BorderRadius.circular(24.r),
-                          ),
-
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 56.w,
-                                height: 56.h,
-
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  shape: BoxShape.circle,
-                                ),
-
-                                child: Icon(
-                                  Icons.person_off_outlined,
-
-                                  color: (Colors.black54),
-
-                                  size: 28,
-                                ),
-                              ),
-
-                              SizedBox(height: 16.h),
-
-                              Text(
-                                'Not Checked In',
-
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF1B1B4B),
-                                ),
-                              ),
-
-                              SizedBox(height: 8.h),
-
-                              Text(
-                                'Please select a workplace to start your session.',
-
-                                textAlign: TextAlign.center,
-
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.black54,
-                                  height: 1.3,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 24.h),
-
-                        // =================================================
-                        // START SESSION
-                        // =================================================
-                        Text(
-                          'Start Session',
-
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1B1B4B),
-                          ),
-                        ),
-
-                        SizedBox(height: 14.h),
-
-                        // =================================================
-                        // SELECT WORKPLACE
-                        // =================================================
-                        InkWell(
-                          onTap: () {
-                            _showWorkplaceBottomSheet(context, cubit);
-                          },
-
-                          borderRadius: BorderRadius.circular(16.r),
-
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
-                            ),
-
-                            decoration: BoxDecoration(
-                              color: lightCardBg,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 40.w,
-                                  height: 40.h,
-
-                                  decoration: BoxDecoration(
-                                    color: primaryBlue,
-                                    borderRadius: BorderRadius.circular(12.r),
-                                  ),
-
-                                  child: Icon(
-                                    selectedWorkplace?.icon ??
-                                        Icons.location_on_outlined,
-
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                ),
-
-                                SizedBox(width: 14.w),
-
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-
-                                    children: [
-                                      Text(
-                                        selectedWorkplace?.title ??
-                                            'Select Workplace',
-
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0xFF1B1B4B),
-                                        ),
-                                      ),
-
-                                      SizedBox(height: 2.h),
-
-                                      Text(
-                                        selectedWorkplace?.subtitle ??
-                                            'Tap to choose location',
-
-                                        style: TextStyle(
-                                          fontSize: 13.sp,
-                                          color: Colors.black45,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                const Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: Colors.black45,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 14.h),
-
-                        // =================================================
-                        // INFO BOX
-                        // =================================================
-                        Container(
-                          padding: EdgeInsets.all(16.w),
-
-                          decoration: BoxDecoration(
-                            color: infoBoxBg,
                             borderRadius: BorderRadius.circular(16.r),
                           ),
 
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-
                             children: [
-                              const Icon(
-                                Icons.info_outline_rounded,
-                                color: Color(0xFF5A607F),
-                                size: 22,
+                              Container(
+                                width: 40.w,
+                                height: 40.h,
+
+                                decoration: BoxDecoration(
+                                  color: primaryBlue,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+
+                                child: Icon(
+                                  selectedWorkplace?.icon ??
+                                      Icons.location_on_outlined,
+
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
                               ),
 
-                              SizedBox(width: 12.w),
+                              SizedBox(width: 14.w),
 
                               Expanded(
-                                child: Text(
-                                  'You must be within ${state.maxDistanceMeters} meters of the selected workplace to successfully register your attendance.',
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
 
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    color: const Color(0xFF5A607F),
-                                    height: 1.4,
-                                  ),
+                                  children: [
+                                    Text(
+                                      selectedWorkplace?.title ??
+                                          'Select Workplace',
+
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF1B1B4B),
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 2.h),
+
+                                    Text(
+                                      selectedWorkplace?.subtitle ??
+                                          'Tap to choose location',
+
+                                      style: TextStyle(
+                                        fontSize: 13.sp,
+                                        color: Colors.black45,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: Colors.black45,
                               ),
                             ],
                           ),
                         ),
+                      ),
 
-                        SizedBox(height: 28.h),
+                      SizedBox(height: 14.h),
 
+                      // =================================================
+                      // INFO BOX
+                      // =================================================
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+
+                        decoration: BoxDecoration(
+                          color: infoBoxBg,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: Color(0xFF5A607F),
+                              size: 22,
+                            ),
+
+                            SizedBox(width: 12.w),
+
+                            Expanded(
+                              child: Text(
+                                'You must be within 900 meters of the selected workplace to successfully register your attendance.',
+
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: const Color(0xFF5A607F),
+                                  height: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 28.h),
+
+                      if (isLoading)
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF4B42DB),
+                          ),
+                        )
+                      else
                         SizedBox(
                           width: double.infinity,
 
                           child: ElevatedButton(
                             onPressed: isCheckInEnabled
                                 ? () {
-                                    cubit.CheckIn(context);
+                                    cubit.checkIn(tokken, context);
                                   }
                                 : null,
 
@@ -463,15 +466,14 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

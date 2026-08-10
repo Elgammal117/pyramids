@@ -2,37 +2,37 @@ import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart
 
 abstract class AttendanceState {
   final WorkplaceItem? selectedWorkplace;
-  final bool isCheckedIn;
-  final int maxDistanceMeters;
+  final bool? isCheckedIn;
+  final int elapsedSeconds;
 
   const AttendanceState({
-    required this.selectedWorkplace,
-    required this.isCheckedIn,
-    required this.maxDistanceMeters,
+    this.selectedWorkplace,
+    this.isCheckedIn,
+    this.elapsedSeconds = 0,
   });
 }
 
 class AttendanceInitial extends AttendanceState {
   const AttendanceInitial({
-    required super.selectedWorkplace,
-    required super.isCheckedIn,
-    required super.maxDistanceMeters,
+    super.selectedWorkplace,
+    super.isCheckedIn,
+    super.elapsedSeconds,
   });
 }
 
 class AttendanceLoading extends AttendanceState {
   const AttendanceLoading({
-    required super.selectedWorkplace,
-    required super.isCheckedIn,
-    required super.maxDistanceMeters,
+    super.selectedWorkplace,
+    super.isCheckedIn,
+    super.elapsedSeconds,
   });
 }
 
 class AttendanceSuccess extends AttendanceState {
   const AttendanceSuccess({
-    required super.selectedWorkplace,
-    required super.isCheckedIn,
-    required super.maxDistanceMeters,
+    super.selectedWorkplace,
+    super.isCheckedIn,
+    super.elapsedSeconds,
   });
 }
 
@@ -40,9 +40,19 @@ class AttendanceFailure extends AttendanceState {
   final String error;
 
   const AttendanceFailure({
-    required super.selectedWorkplace,
-    required super.isCheckedIn,
-    required super.maxDistanceMeters,
     required this.error,
+    super.selectedWorkplace,
+    super.isCheckedIn,
+    super.elapsedSeconds,
   });
 }
+
+class AttendanceTimerTick extends AttendanceState {
+  const AttendanceTimerTick({
+    super.selectedWorkplace,
+    super.isCheckedIn,
+    super.elapsedSeconds,
+  });
+}
+
+
