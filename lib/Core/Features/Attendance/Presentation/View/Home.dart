@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 
@@ -29,8 +30,7 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<int>? onBottomNavTap;
   final int currentBottomNavIndex;
 
-  const HomeScreen({
-    super.key,
+  HomeScreen({
     required this.tokken,
     required this.userName,
     this.initialSelectedWorkplace,
@@ -408,33 +408,13 @@ class HomeScreen extends StatelessWidget {
 
                         SizedBox(height: 28.h),
 
-                        // =================================================
-                        // CHECK IN BUTTON
-                        // =================================================
                         SizedBox(
                           width: double.infinity,
 
                           child: ElevatedButton(
-                            // =================================================
-                            // IMPORTANT:
-                            //
-                            // We DON'T change isCheckedIn here.
-                            //
-                            // We DON'T change the button.
-                            //
-                            // We ONLY navigate to the next page.
-                            // =================================================
                             onPressed: isCheckInEnabled
                                 ? () {
-                                    cubit.onCheckInPressed();
-
-                                    if (cubit.state is! AttendanceFailure) {
-                                      onCheckInTap?.call();
-                                      goTo(
-                                        context,
-                                        page: LocationPermissionScreen(),
-                                      );
-                                    }
+                                    cubit.CheckIn(context);
                                   }
                                 : null,
 
@@ -487,45 +467,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // =========================================================
-                // BOTTOM NAVIGATION
-                // =========================================================
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                    children: [
-                      _buildNavItem(
-                        icon: Icons.grid_view_rounded,
-                        label: 'HOME',
-                        isSelected: currentBottomNavIndex == 0,
-                        onTap: () => onBottomNavTap?.call(0),
-                      ),
-
-                      _buildNavItem(
-                        icon: Icons.history_rounded,
-                        label: 'HISTORY',
-                        isSelected: currentBottomNavIndex == 1,
-                        onTap: () => onBottomNavTap?.call(1),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           );
@@ -534,49 +475,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-// ===========================================================================
-// BOTTOM NAV ITEM
-// ===========================================================================
-
-Widget _buildNavItem({
-  required IconData icon,
-  required String label,
-  required bool isSelected,
-  required VoidCallback onTap,
-}) {
-  const primaryBlue = Color(0xFF4B42DB);
-  const unselectedColor = Color(0xFF6E7191);
-
-  return InkWell(
-    onTap: onTap,
-
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-
-      children: [
-        Icon(icon, color: isSelected ? primaryBlue : unselectedColor, size: 24),
-
-        SizedBox(height: 4.h),
-
-        Text(
-          label,
-
-          style: TextStyle(
-            fontSize: 11.sp,
-            fontWeight: FontWeight.bold,
-            color: isSelected ? primaryBlue : unselectedColor,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-// ===========================================================================
-// WORKPLACE SELECTION BOTTOM SHEET
-// ===========================================================================
 
 class WorkplaceSelectionBottomSheet extends StatefulWidget {
   final List<WorkplaceItem> workplaces;

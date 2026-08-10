@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:pyramids/Core/helper/my_navigator.dart';
+import 'package:pyramids/Core/helper/show_snack_bar.dart';
 
 class LocationPermissionScreen extends StatelessWidget {
   final VoidCallback? onEnableLocationAccess;
@@ -146,7 +149,51 @@ class LocationPermissionScreen extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: onEnableLocationAccess,
+                          onPressed: () async {
+                            // 1. Check if location services are enabled
+                            bool serviceEnabled =
+                                await Geolocator.isLocationServiceEnabled();
+                            if (!serviceEnabled) {
+                              showCustomSnackBar(
+                                context,
+                                status: SnackBarStatus.fail,
+                                text:
+                                    'Location services are disabled. Please enable them in settings.',
+                              );
+                              return;
+                            }
+
+                            // 2. Check & request runtime permission
+                            LocationPermission permission =
+                                await Geolocator.checkPermission();
+                            if (permission == LocationPermission.denied) {
+                              permission = await Geolocator.requestPermission();
+                              if (permission == LocationPermission.denied) {
+                                showCustomSnackBar(
+                                  context,
+                                  status: SnackBarStatus.fail,
+                                  text:
+                                      'Please give the app permission to access your location.',
+                                );
+                                return;
+                              }
+                            }
+
+                            if (permission ==
+                                LocationPermission.deniedForever) {
+                              showCustomSnackBar(
+                                context,
+                                status: SnackBarStatus.fail,
+                                text:
+                                    'Location permission permanently denied. Please enable it in app settings.',
+                              );
+                              await Geolocator.openAppSettings();
+                              return;
+                            }
+
+                            // 3. All checks passed — get position
+                            Navigator.pop(context);
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryBlue,
                             foregroundColor: Colors.white,

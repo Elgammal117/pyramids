@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 import 'package:pyramids/Core/Features/Attendance/Data/Models/WorkplaceItem.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/LocationPermission.dart';
+import 'package:pyramids/Core/helper/my_navigator.dart';
 
 class AttendanceCubit extends Cubit<AttendanceState> {
   AttendanceCubit({
@@ -48,19 +51,27 @@ class AttendanceCubit extends Cubit<AttendanceState> {
     });
   }
 
-  void onCheckInPressed() {
-    if (state.selectedWorkplace == null) {
-      emit(
-        AttendanceFailure(
-          selectedWorkplace: state.selectedWorkplace,
-          isCheckedIn: state.isCheckedIn,
-          maxDistanceMeters: state.maxDistanceMeters,
-          error: 'Please select a workplace first',
-        ),
-      );
-      return;
-    }
+  Future<void> CheckIn(BuildContext context) async {
+    // 1. Check if location services are enabled
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
-    toggleCheckInStatus();
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (!serviceEnabled ||
+        permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      goTo(context, page: LocationPermissionScreen());
+    } else {
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      );
+
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: locationSettings,
+      );
+      print("latitude: ${position.latitude}");
+      print("longitude: ${position.longitude}");
+    }
   }
 }

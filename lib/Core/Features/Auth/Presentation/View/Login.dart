@@ -5,6 +5,7 @@ import 'package:pyramids/Core/Features/Attendance/Presentation/View/Home.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthCubit.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthState.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/View/SignUp.dart';
+import 'package:pyramids/Core/Navigation/MainNavigation.dart';
 import 'package:pyramids/Core/helper/my_navigator.dart';
 import 'package:pyramids/Core/helper/show_snack_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -39,7 +40,7 @@ class LoginScreen extends StatelessWidget {
 
             goTo(
               context,
-              page: HomeScreen(
+              page: MainNavigation(
                 tokken: state.accessToken,
                 userName: state.userName,
               ),

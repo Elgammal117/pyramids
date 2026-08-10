@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/Home.dart';
+import 'package:pyramids/Core/Features/Attendance/Presentation/View/LocationPermission.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/View/Login.dart';
+import 'package:pyramids/MapTest.dart';
 
 void main() {
   runApp(const Pyramids());
@@ -16,7 +19,7 @@ class Pyramids extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: LoginScreen(),
+          home: HomeScreen(tokken: '', userName: ''),
         );
       },
     );
