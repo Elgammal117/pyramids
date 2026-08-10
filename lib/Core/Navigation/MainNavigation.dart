@@ -44,7 +44,7 @@ class _MainNavigationState extends State<MainNavigation> {
       create: (context) => AttendanceCubit(),
       child: BlocBuilder<AttendanceCubit, AttendanceState>(
         builder: (context, state) {
-          final isCheckedIn = state.isCheckedIn == true;
+          final bool isCheckedIn = state.isCheckedIn ?? false;
 
           return Scaffold(
             body: IndexedStack(

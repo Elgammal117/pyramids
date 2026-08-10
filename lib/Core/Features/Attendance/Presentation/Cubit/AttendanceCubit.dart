@@ -81,6 +81,13 @@ class AttendanceCubit extends Cubit<AttendanceState> {
         permission == LocationPermission.deniedForever) {
       goTo(context, page: LocationPermissionScreen());
     } else {
+      emit(
+        AttendanceLoading(
+          selectedWorkplace: state.selectedWorkplace,
+          isCheckedIn: state.isCheckedIn ?? false,
+          elapsedSeconds: state.elapsedSeconds,
+        ),
+      );
       final LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 100,
@@ -120,6 +127,14 @@ class AttendanceCubit extends Cubit<AttendanceState> {
         permission == LocationPermission.deniedForever) {
       goTo(context, page: LocationPermissionScreen());
     } else {
+      emit(
+        AttendanceLoading(
+          selectedWorkplace: state.selectedWorkplace,
+          isCheckedIn: state.isCheckedIn ?? false,
+          elapsedSeconds: state.elapsedSeconds,
+        ),
+      );
+
       final LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 100,
@@ -155,8 +170,13 @@ class AttendanceCubit extends Cubit<AttendanceState> {
           final workplaceName = state.selectedWorkplace?.title ?? 'Workplace';
 
           stopTimer();
-          emit(AttendanceLoading());
-          emit(AttendanceSuccess());
+          emit(
+            AttendanceSuccess(
+              selectedWorkplace: state.selectedWorkplace,
+              isCheckedIn: false,
+              elapsedSeconds: state.elapsedSeconds,
+            ),
+          );
           goTo(
             context,
             page: SuccessfulScreen(
