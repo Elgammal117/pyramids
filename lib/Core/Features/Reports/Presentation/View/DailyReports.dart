@@ -10,6 +10,7 @@ class DailyReportsScreen extends StatelessWidget {
   final String checkInTime;
   final String checkOutTime;
   final String location;
+  final String userName;
 
   const DailyReportsScreen({
     super.key,
@@ -20,10 +21,22 @@ class DailyReportsScreen extends StatelessWidget {
     this.checkInTime = '08:30 AM',
     this.checkOutTime = '04:35 PM',
     this.location = 'New Cairo Headquarters',
+    this.userName = 'Alexander Wright',
   });
 
   @override
   Widget build(BuildContext context) {
+    final isAbsent = status.toLowerCase().contains('absent');
+    final statusBackgroundColor = isAbsent
+        ? const Color(0xFFFEE2E2)
+        : const Color(0xFFDCFCE7);
+    final statusTextColor = isAbsent
+        ? const Color(0xFFDC2626)
+        : const Color(0xFF15803D);
+    final statusIconColor = isAbsent
+        ? const Color(0xFFDC2626)
+        : const Color(0xFF15803D);
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
@@ -85,7 +98,7 @@ class DailyReportsScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          'Alexander Wright',
+                          userName,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.sp,
@@ -95,20 +108,8 @@ class DailyReportsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   // Profile Icon
-                  Container(
-                    width: 44.r,
-                    height: 44.r,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.person_outline,
-                      color: Colors.white,
-                      size: 22.sp,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -169,7 +170,7 @@ class DailyReportsScreen extends StatelessWidget {
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'TOTAL HOURS',
@@ -194,45 +195,7 @@ class DailyReportsScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              SizedBox(width: 12.w),
-
                               // PRODUCTIVITY
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 14.w,
-                                    vertical: 14.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16.r),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'PRODUCTIVITY',
-                                        style: TextStyle(
-                                          color: const Color(0xFF64748B),
-                                          fontSize: 11.sp,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      SizedBox(height: 6.h),
-                                      Text(
-                                        productivity,
-                                        style: TextStyle(
-                                          color: const Color(0xFF4F46E5),
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
 
@@ -243,7 +206,7 @@ class DailyReportsScreen extends StatelessWidget {
                             width: double.infinity,
                             padding: EdgeInsets.symmetric(vertical: 12.h),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFDCFCE7),
+                              color: statusBackgroundColor,
                               borderRadius: BorderRadius.circular(14.r),
                             ),
                             child: Row(
@@ -252,8 +215,8 @@ class DailyReportsScreen extends StatelessWidget {
                                 Container(
                                   width: 20.r,
                                   height: 20.r,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF15803D),
+                                  decoration: BoxDecoration(
+                                    color: statusIconColor,
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
@@ -266,7 +229,7 @@ class DailyReportsScreen extends StatelessWidget {
                                 Text(
                                   status,
                                   style: TextStyle(
-                                    color: const Color(0xFF15803D),
+                                    color: statusTextColor,
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -430,64 +393,6 @@ class DailyReportsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ),
-
-            // Bottom Navigation Bar
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: const Color(0xFFEAECF0), width: 1.w),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // Home Tab
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.grid_view_rounded,
-                        color: const Color(0xFF667085),
-                        size: 24.sp,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'HOME',
-                        style: TextStyle(
-                          color: const Color(0xFF667085),
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // History Tab
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.history_rounded,
-                        color: const Color(0xFF4F46E5),
-                        size: 24.sp,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        'HISTORY',
-                        style: TextStyle(
-                          color: const Color(0xFF4F46E5),
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
           ],

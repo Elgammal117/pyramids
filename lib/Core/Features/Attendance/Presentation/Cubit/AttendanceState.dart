@@ -54,5 +54,3 @@ class AttendanceTimerTick extends AttendanceState {
     super.elapsedSeconds,
   });
 }
-
-

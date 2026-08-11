@@ -266,12 +266,14 @@ class SuccessfulScreen extends StatelessWidget {
                         height: 54.h,
                         child: ElevatedButton(
                           onPressed: () {
+                            print("View Daily Report Button Pressed");
+                            print("Token: ${tokken}");
                             goTo(
                               context,
                               page: MainNavigation(
                                 page: 1,
-                                tokken: '',
-                                userName: '',
+                                tokken: tokken!,
+                                userName: userName!,
                               ),
                             );
                           },
@@ -319,8 +321,8 @@ class SuccessfulScreen extends StatelessWidget {
                               context,
                               page: MainNavigation(
                                 page: 0,
-                                tokken: '',
-                                userName: '',
+                                tokken: tokken!,
+                                userName: userName!,
                               ),
                             );
                           },

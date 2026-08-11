@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthCubit.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/Cubit/AuthState.dart';
 import 'package:pyramids/Core/Features/Auth/Presentation/View/Login.dart';
+import 'package:pyramids/Core/helper/app_validator.dart';
 import 'package:pyramids/Core/helper/my_navigator.dart';
 import 'package:pyramids/Core/helper/show_snack_bar.dart';
 
@@ -203,9 +204,12 @@ class SignUpScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 8.h),
-                            TextField(
+                            TextFormField(
                               controller: cubit.signUpPasswordController,
                               obscureText: cubit.obscureSignUpPassword,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: AppValidator.validatePassword,
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 color: Colors.black87,
@@ -236,6 +240,7 @@ class SignUpScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
                                 ),
+                                errorMaxLines: 2,
                                 contentPadding: const EdgeInsets.symmetric(
                                   vertical: 16,
                                   horizontal: 16,
@@ -255,9 +260,16 @@ class SignUpScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 8.h),
-                            TextField(
+                            TextFormField(
                               controller: cubit.signUpConfirmPasswordController,
                               obscureText: cubit.obscureSignUpConfirmPassword,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) =>
+                                  AppValidator.validateConfirmPassword(
+                                    value,
+                                    cubit.signUpPasswordController.text,
+                                  ),
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 color: Colors.black87,
@@ -289,6 +301,7 @@ class SignUpScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
                                 ),
+                                errorMaxLines: 2,
                                 contentPadding: const EdgeInsets.symmetric(
                                   vertical: 16,
                                   horizontal: 16,

@@ -116,7 +116,7 @@ class AttendanceCubit extends Cubit<AttendanceState> {
     }
   }
 
-  Future checkOut(String token, BuildContext context) async {
+  Future checkOut(String token, String userName, BuildContext context) async {
     // 1. Check if location services are enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
@@ -170,16 +170,12 @@ class AttendanceCubit extends Cubit<AttendanceState> {
           final workplaceName = state.selectedWorkplace?.title ?? 'Workplace';
 
           stopTimer();
-          emit(
-            AttendanceSuccess(
-              selectedWorkplace: state.selectedWorkplace,
-              isCheckedIn: false,
-              elapsedSeconds: state.elapsedSeconds,
-            ),
-          );
+
           goTo(
             context,
             page: SuccessfulScreen(
+              tokken: token,
+              userName: userName,
               totalDuration: totalDuration,
               checkOutTime: checkOutTime,
               workplaceName: workplaceName,

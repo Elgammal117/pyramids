@@ -5,24 +5,11 @@ import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceC
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 import 'package:pyramids/Core/Util/app_colors.dart';
 
-class CheckOutScreen extends StatefulWidget {
+class CheckOutScreen extends StatelessWidget {
   final String? tokken;
   final String? userName;
 
   const CheckOutScreen({super.key, this.tokken, this.userName});
-
-  @override
-  State<CheckOutScreen> createState() => _CheckOutScreenState();
-}
-
-class _CheckOutScreenState extends State<CheckOutScreen> {
-  String _formatDuration(int totalSeconds) {
-    final duration = Duration(seconds: totalSeconds);
-    final hours = duration.inHours.toString().padLeft(2, '0');
-    final minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
-    final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
-    return '$hours:$minutes:$seconds';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,20 +44,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   child: Row(
                     children: [
                       // Menu Button
-                      Container(
-                        width: 44.r,
-                        height: 44.r,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.menu,
-                          color: Colors.white,
-                          size: 22.sp,
-                        ),
-                      ),
-                      SizedBox(width: 14.w),
+
                       // Welcome Text
                       Expanded(
                         child: Column(
@@ -88,7 +62,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             ),
                             SizedBox(height: 2.h),
                             Text(
-                              widget.userName ?? 'Alexander Wright',
+                              userName ?? 'Alexander Wright',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.sp,
@@ -98,20 +72,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           ],
                         ),
                       ),
+
                       // Profile Icon
-                      Container(
-                        width: 44.r,
-                        height: 44.r,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.person_outline,
-                          color: Colors.white,
-                          size: 22.sp,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -343,7 +305,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             height: 56.h,
                             child: ElevatedButton(
                               onPressed: () {
-                                cubit.checkOut(widget.tokken ?? '', context);
+                                print("Check Out Button Pressed");
+                                print("Token: ${tokken}");
+                                cubit.checkOut(tokken!, userName!, context);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF4F46E5),
@@ -388,4 +352,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       },
     );
   }
+}
+
+String _formatDuration(int totalSeconds) {
+  final duration = Duration(seconds: totalSeconds);
+  final hours = duration.inHours.toString().padLeft(2, '0');
+  final minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
+  final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+  return '$hours:$minutes:$seconds';
 }
