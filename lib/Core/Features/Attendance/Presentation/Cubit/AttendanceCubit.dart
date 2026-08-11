@@ -104,8 +104,8 @@ class AttendanceCubit extends Cubit<AttendanceState> {
 
       var response = await AttendanceRepo().chickIn(
         workplaceid: state.selectedWorkplace!.id,
-        lat: 30.029032160910475,
-        long: 31.460742270975558,
+        lat: position.latitude,
+        long: position.longitude,
         token: token,
       );
       return response.fold(
@@ -159,8 +159,8 @@ class AttendanceCubit extends Cubit<AttendanceState> {
       print("longitude: ${position.longitude}");
 
       var response = await AttendanceRepo().chickOut(
-        lat: 30.029032160910475,
-        long: 31.460742270975558,
+        lat: position.latitude,
+        long: position.longitude,
         token: token,
       );
 
