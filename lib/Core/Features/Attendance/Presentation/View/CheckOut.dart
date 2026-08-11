@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceCubit.dart';
 import 'package:pyramids/Core/Features/Attendance/Presentation/Cubit/AttendanceState.dart';
 import 'package:pyramids/Core/Util/app_colors.dart';
+import 'package:pyramids/Core/helper/show_snack_bar.dart';
 
 class CheckOutScreen extends StatelessWidget {
   final String? tokken;
@@ -14,9 +15,18 @@ class CheckOutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AttendanceCubit, AttendanceState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is AttendanceFailure) {
+          showCustomSnackBar(
+            context,
+            text: state.error,
+            status: SnackBarStatus.fail,
+          );
+        }
+      },
       builder: (context, state) {
         final cubit = AttendanceCubit.get(context);
+        final isCheckingOut = state is AttendanceLoading || cubit.isCheckingOut;
         final workplaceTitle =
             state.selectedWorkplace?.title ?? 'New Cairo Headquarters';
 
@@ -293,7 +303,7 @@ class CheckOutScreen extends StatelessWidget {
                         SizedBox(height: 24.h),
 
                         // Check Out Button / Loading Indicator
-                        if (state is AttendanceLoading)
+                        if (isCheckingOut)
                           Center(
                             child: CircularProgressIndicator(
                               color: Color(0xFF4F46E5),
@@ -307,6 +317,7 @@ class CheckOutScreen extends StatelessWidget {
                               onPressed: () {
                                 print("Check Out Button Pressed");
                                 print("Token: ${tokken}");
+                                if (isCheckingOut) return;
                                 cubit.checkOut(tokken!, userName!, context);
                               },
                               style: ElevatedButton.styleFrom(

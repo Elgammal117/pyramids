@@ -26,6 +26,9 @@ class AttendanceCubit extends Cubit<AttendanceState> {
   static AttendanceCubit get(BuildContext context) => BlocProvider.of(context);
 
   Timer? _timer;
+  bool _isCheckingOut = false;
+
+  bool get isCheckingOut => _isCheckingOut;
 
   void startTimer() {
     _timer?.cancel();
@@ -101,8 +104,8 @@ class AttendanceCubit extends Cubit<AttendanceState> {
 
       var response = await AttendanceRepo().chickIn(
         workplaceid: state.selectedWorkplace!.id,
-        lat: 30.018354095372796,
-        long: 31.74005697912368,
+        lat: 30.029032160910475,
+        long: 31.460742270975558,
         token: token,
       );
       return response.fold(
@@ -117,16 +120,25 @@ class AttendanceCubit extends Cubit<AttendanceState> {
   }
 
   Future checkOut(String token, String userName, BuildContext context) async {
-    // 1. Check if location services are enabled
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (_isCheckingOut) {
+      return;
+    }
 
-    LocationPermission permission = await Geolocator.checkPermission();
+    _isCheckingOut = true;
 
-    if (!serviceEnabled ||
-        permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      goTo(context, page: LocationPermissionScreen());
-    } else {
+    try {
+      // 1. Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      if (!serviceEnabled ||
+          permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        await goTo(context, page: LocationPermissionScreen());
+        return;
+      }
+
       emit(
         AttendanceLoading(
           selectedWorkplace: state.selectedWorkplace,
@@ -147,15 +159,16 @@ class AttendanceCubit extends Cubit<AttendanceState> {
       print("longitude: ${position.longitude}");
 
       var response = await AttendanceRepo().chickOut(
-        lat: 30.018354095372796,
-        long: 31.74005697912368,
+        lat: 30.029032160910475,
+        long: 31.460742270975558,
         token: token,
       );
-      return response.fold(
+
+      await response.fold(
         (l) {
           emit(AttendanceFailure(error: l));
         },
-        (r) {
+        (r) async {
           // Capture data before stopping timer
           final seconds = state.elapsedSeconds;
           final hours = (seconds ~/ 3600).toString().padLeft(2, '0');
@@ -171,7 +184,15 @@ class AttendanceCubit extends Cubit<AttendanceState> {
 
           stopTimer();
 
-          goTo(
+          emit(
+            AttendanceSuccess(
+              selectedWorkplace: state.selectedWorkplace,
+              isCheckedIn: false,
+              elapsedSeconds: state.elapsedSeconds,
+            ),
+          );
+
+          await goTo(
             context,
             page: SuccessfulScreen(
               tokken: token,
@@ -183,6 +204,10 @@ class AttendanceCubit extends Cubit<AttendanceState> {
           );
         },
       );
+    } catch (e) {
+      emit(AttendanceFailure(error: e.toString()));
+    } finally {
+      _isCheckingOut = false;
     }
   }
 }

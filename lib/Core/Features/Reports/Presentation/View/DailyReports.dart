@@ -142,7 +142,7 @@ class DailyReportsScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                dateText,
+                                _formatDateOnly(dateText),
                                 style: TextStyle(
                                   color: const Color(0xFF64748B),
                                   fontSize: 14.sp,
@@ -326,7 +326,7 @@ class DailyReportsScreen extends StatelessWidget {
                                             ),
                                             SizedBox(height: 4.h),
                                             Text(
-                                              location,
+                                              _formatDateOnly(dateText),
                                               style: TextStyle(
                                                 color: const Color(0xFF64748B),
                                                 fontSize: 13.sp,
@@ -337,7 +337,7 @@ class DailyReportsScreen extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        checkInTime,
+                                        _formatTimeOnly(checkInTime),
                                         style: TextStyle(
                                           color: const Color(0xFF312E81),
                                           fontSize: 14.sp,
@@ -363,19 +363,34 @@ class DailyReportsScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(16.r),
                                   ),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        'Check-out',
-                                        style: TextStyle(
-                                          color: const Color(0xFF1E293B),
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Check-out',
+                                              style: TextStyle(
+                                                color: const Color(0xFF1E293B),
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 4.h),
+                                            Text(
+                                              _formatDateOnly(dateText),
+                                              style: TextStyle(
+                                                color: const Color(0xFF64748B),
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       Text(
-                                        checkOutTime,
+                                        _formatTimeOnly(checkOutTime),
                                         style: TextStyle(
                                           color: const Color(0xFF312E81),
                                           fontSize: 14.sp,
@@ -399,5 +414,42 @@ class DailyReportsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDateOnly(String value) {
+    final parsed = DateTime.tryParse(value);
+    if (parsed == null) {
+      return value;
+    }
+
+    const months = <String>[
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return '${months[parsed.month - 1]} ${parsed.day}, ${parsed.year}';
+  }
+
+  String _formatTimeOnly(String value) {
+    final parsed = DateTime.tryParse(value);
+    if (parsed == null) {
+      return value;
+    }
+
+    final shifted = parsed.add(const Duration(hours: 3));
+    final hour = shifted.hour % 12 == 0 ? 12 : shifted.hour % 12;
+    final minute = shifted.minute.toString().padLeft(2, '0');
+    final period = shifted.hour >= 12 ? 'PM' : 'AM';
+    return '${hour.toString().padLeft(2, '0')}:$minute $period';
   }
 }
